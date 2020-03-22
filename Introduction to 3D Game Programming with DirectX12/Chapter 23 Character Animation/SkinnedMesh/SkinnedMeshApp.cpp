@@ -19,6 +19,7 @@ using namespace DirectX::PackedVector;
 
 const int gNumFrameResources = 3;
 
+//David：一个骨骼动画实例，因为某个骨骼动画模型会有多份实例，所以每一个对应一个SkinnedModelInstance实例
 struct SkinnedModelInstance
 {
     SkinnedData* SkinnedInfo = nullptr;
@@ -35,8 +36,9 @@ struct SkinnedModelInstance
         TimePos += dt;
 
         // Loop animation
-        if(TimePos > SkinnedInfo->GetClipEndTime(ClipName))
-            TimePos = 0.0f;
+		if (TimePos > SkinnedInfo->GetClipEndTime(ClipName))
+			TimePos -= SkinnedInfo->GetClipEndTime(ClipName);
+            //TimePos = 0.0f;//David：书中原来的代码，不好
 
         // Compute the final transforms for this time position.
         SkinnedInfo->GetFinalTransforms(ClipName, TimePos, FinalTransforms);
@@ -45,6 +47,9 @@ struct SkinnedModelInstance
 
 // Lightweight structure stores parameters to draw a shape.  This will
 // vary from app-to-app.
+//David：相当于Ogre里的RenderOperation，包含了一个渲染批次里的所有数据
+//引擎里每一帧都是查询完视锥里可见的场景物体以后，从物体里获取所有的RenderItem。
+//当前Demo比较简单，只是在初始化时调用BuildRenderItems()一次将场景里所有的RenderItem都获取到
 struct RenderItem
 {
 	RenderItem() = default;
@@ -64,6 +69,8 @@ struct RenderItem
 	int NumFramesDirty = gNumFrameResources;
 
 	// Index into GPU constant buffer corresponding to the ObjectCB for this render item.
+	//David：每一个RenderItem都有一个独一无二的索引值，其实也就是构建场景时创建每一个RenderItem时的序号
+	//所有的RenderItem对应的实例化数据都存储在FrameResource::ObjectCB里，渲染每一个RenderItem时，使用ObjCBIndex计算偏移量
 	UINT ObjCBIndex = -1;
  
 	Material* Mat = nullptr;
@@ -78,6 +85,7 @@ struct RenderItem
     int BaseVertexLocation = 0;
 	
 	// Only applicable to skinned render-items.
+	// David：每一个有骨骼动画的RenderItem都有一个独一无二的索引值
     UINT SkinnedCBIndex = -1;
 	
     // nullptr if this render-item is not animated by skinned mesh.
@@ -147,12 +155,12 @@ private:
 
 private:
 
-    std::vector<std::unique_ptr<FrameResource>> mFrameResources;
-    FrameResource* mCurrFrameResource = nullptr;
-    int mCurrFrameResourceIndex = 0;
+    std::vector<std::unique_ptr<FrameResource>> mFrameResources;//David：所有的帧资源，个数是gNumFrameResources个，也就是3个，渲染时轮流处理
+    FrameResource* mCurrFrameResource = nullptr;//David：当前帧处理的帧资源
+    int mCurrFrameResourceIndex = 0;//David：当前帧处理的帧资源的索引值，只能是0、1或2
 
-    ComPtr<ID3D12RootSignature> mRootSignature = nullptr;
-    ComPtr<ID3D12RootSignature> mSsaoRootSignature = nullptr;
+    ComPtr<ID3D12RootSignature> mRootSignature = nullptr;//在渲染阴影贴图、场景深度和法线、主视口中都会使用到
+    ComPtr<ID3D12RootSignature> mSsaoRootSignature = nullptr;//只在渲染SSAO时使用
 
 	ComPtr<ID3D12DescriptorHeap> mSrvDescriptorHeap = nullptr;
 
@@ -166,11 +174,12 @@ private:
     std::vector<D3D12_INPUT_ELEMENT_DESC> mSkinnedInputLayout;
  
 	// List of all the render items.
-	std::vector<std::unique_ptr<RenderItem>> mAllRitems;
+	std::vector<std::unique_ptr<RenderItem>> mAllRitems;//David：所有的可渲染物体
 
 	// Render items divided by PSO.
-	std::vector<RenderItem*> mRitemLayer[(int)RenderLayer::Count];
+	std::vector<RenderItem*> mRitemLayer[(int)RenderLayer::Count];//David：所有的可渲染物体，根据PSO分组了
 
+	//David：下面7个变量分别用于记录各个渲染环节用到的资源的描述符在描述符堆里的索引值，用于渲染时设置描述符。
 	UINT mSkyTexHeapIndex = 0;
     UINT mShadowMapHeapIndex = 0;
     UINT mSsaoHeapIndexStart = 0;
@@ -189,8 +198,8 @@ private:
     std::string mSkinnedModelFilename = "Models\\soldier.m3d";
     std::unique_ptr<SkinnedModelInstance> mSkinnedModelInst; 
     SkinnedData mSkinnedInfo;
-    std::vector<M3DLoader::Subset> mSkinnedSubsets;
-    std::vector<M3DLoader::M3dMaterial> mSkinnedMats;
+    std::vector<M3DLoader::Subset> mSkinnedSubsets;//David：只在LoadSkinnedModel()里面加载模型时使用，对应的是m3d模型里的SubsetTable
+    std::vector<M3DLoader::M3dMaterial> mSkinnedMats;//David：在LoadSkinnedModel()里面加载模型时会使用，对应的是m3d模型里的Materials
     std::vector<std::string> mSkinnedTextureNames;
 
 	Camera mCamera;
@@ -460,6 +469,9 @@ void SkinnedMeshApp::Draw(const GameTimer& gt)
 	// Bind all the textures used in this scene.  Observe
     // that we only have to specify the first descriptor in the table.  
     // The root signature knows how many descriptors are expected in the table.
+	//David：SetGraphicsRootShaderResourceView()、SetGraphicsRootDescriptorTable()、SetGraphicsRootConstantBufferView()用于向GPU设置
+	//常量缓冲区、纹理、Structured buffer等资源，它们的第一个参数都是在根签名中的索引值，也就是BuildRootSignature()里slotRootParameter
+	//的索引值。
     mCommandList->SetGraphicsRootDescriptorTable(5, mSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
 	
     auto passCB = mCurrFrameResource->PassCB->Resource();
@@ -850,19 +862,19 @@ void SkinnedMeshApp::LoadTextures()
 void SkinnedMeshApp::BuildRootSignature()
 {
 	CD3DX12_DESCRIPTOR_RANGE texTable0;
-	texTable0.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 3, 0, 0);
+	texTable0.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 3, 0, 0);//David：对应Shader里的gCubeMap、gShadowMap和gSsaoMap
 
 	CD3DX12_DESCRIPTOR_RANGE texTable1;
-	texTable1.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 48, 3, 0);
+	texTable1.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 48, 3, 0);//David：对应Shader里的gTextureMaps[48]
 
     // Root parameter can be a table, root descriptor or root constants.
     CD3DX12_ROOT_PARAMETER slotRootParameter[6];
 
 	// Perfomance TIP: Order from most frequent to least frequent.
-    slotRootParameter[0].InitAsConstantBufferView(0);
-    slotRootParameter[1].InitAsConstantBufferView(1);
-    slotRootParameter[2].InitAsConstantBufferView(2);
-    slotRootParameter[3].InitAsShaderResourceView(0, 1);
+    slotRootParameter[0].InitAsConstantBufferView(0);//David：对应Shader里的常量缓冲区cbPerObject
+    slotRootParameter[1].InitAsConstantBufferView(1);//David：对应Shader里的常量缓冲区cbSkinned
+    slotRootParameter[2].InitAsConstantBufferView(2);//David：对应Shader里的常量缓冲区cbPass
+    slotRootParameter[3].InitAsShaderResourceView(0, 1);//David：对应Shader里的结构化缓冲区gMaterialData
 	slotRootParameter[4].InitAsDescriptorTable(1, &texTable0, D3D12_SHADER_VISIBILITY_PIXEL);
 	slotRootParameter[5].InitAsDescriptorTable(1, &texTable1, D3D12_SHADER_VISIBILITY_PIXEL);
 

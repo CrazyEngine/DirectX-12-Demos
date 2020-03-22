@@ -26,6 +26,7 @@ public:
         BYTE BoneIndices[4];
     };
 
+	//David：一个实例对应一个子mesh
     struct Subset
     {
         UINT Id = -1;

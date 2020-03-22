@@ -4,6 +4,7 @@
 #include "../../Common/MathHelper.h"
 #include "../../Common/UploadBuffer.h"
 
+//一个RenderItem实例使用一个ObjectConstants实例
 struct ObjectConstants
 {
     DirectX::XMFLOAT4X4 World = MathHelper::Identity4x4();
@@ -14,6 +15,7 @@ struct ObjectConstants
 	UINT     ObjPad2;
 };
 
+//一个骨骼动画模型实例使用一个SkinnedConstants实例
 struct SkinnedConstants
 {
     DirectX::XMFLOAT4X4 BoneTransforms[96];
@@ -117,12 +119,12 @@ public:
     // We cannot update a cbuffer until the GPU is done processing the commands
     // that reference it.  So each frame needs their own cbuffers.
     std::unique_ptr<UploadBuffer<PassConstants>> PassCB = nullptr;
-    std::unique_ptr<UploadBuffer<ObjectConstants>> ObjectCB = nullptr;
+    std::unique_ptr<UploadBuffer<ObjectConstants>> ObjectCB = nullptr;//David：GPU内存，保存了场景里所有的RenderItem的实例常量数据
     std::unique_ptr<UploadBuffer<SkinnedConstants>> SkinnedCB = nullptr;
     std::unique_ptr<UploadBuffer<SsaoConstants>> SsaoCB = nullptr;
 	std::unique_ptr<UploadBuffer<MaterialData>> MaterialBuffer = nullptr;
 
     // Fence value to mark commands up to this fence point.  This lets us
     // check if these frame resources are still in use by the GPU.
-    UINT64 Fence = 0;
+    UINT64 Fence = 0;//值等于在GPU里调用Signal()设置的屏障序号
 };

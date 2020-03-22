@@ -7,12 +7,14 @@
 ///<summary>
 /// A Keyframe defines the bone transformation at an instant in time.
 ///</summary>
+//David：某个个骨骼节点在某一个时刻的变换信息
 struct Keyframe
 {
 	Keyframe();
 	~Keyframe();
 
     float TimePos;
+	//David：之所以存储TSR，是因为需要做插值
 	DirectX::XMFLOAT3 Translation;
     DirectX::XMFLOAT3 Scale;
     DirectX::XMFLOAT4 RotationQuat;
@@ -25,11 +27,13 @@ struct Keyframe
 ///
 /// We assume an animation always has two keyframes.
 ///</summary>
+//David：某个骨骼在某一个动作里的所有关键帧信息
 struct BoneAnimation
 {
 	float GetStartTime()const;
 	float GetEndTime()const;
 
+	//David：根据时间点t，找出最近的两个关键帧，插值出变换矩阵，存储进M
     void Interpolate(float t, DirectX::XMFLOAT4X4& M)const;
 
 	std::vector<Keyframe> Keyframes; 	
@@ -40,16 +44,19 @@ struct BoneAnimation
 /// An AnimationClip requires a BoneAnimation for every bone to form
 /// the animation clip.    
 ///</summary>
+//David：某个动作所涉及的所有信息
 struct AnimationClip
 {
 	float GetClipStartTime()const;
 	float GetClipEndTime()const;
 
+	//David：重点讲：在两帧之间插值，计算出新的坐标变换矩阵
     void Interpolate(float t, std::vector<DirectX::XMFLOAT4X4>& boneTransforms)const;
 
     std::vector<BoneAnimation> BoneAnimations; 	
 };
 
+//David：某个3D蒙皮模型对应的蒙皮部分的所有数据：骨架层级、骨骼绑定位置逆变换矩阵、所有的动作
 class SkinnedData
 {
 public:
