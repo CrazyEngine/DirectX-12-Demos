@@ -162,7 +162,7 @@ private:
     ComPtr<ID3D12RootSignature> mRootSignature = nullptr;//在渲染阴影贴图、场景深度和法线、主视口中都会使用到
     ComPtr<ID3D12RootSignature> mSsaoRootSignature = nullptr;//只在渲染SSAO时使用
 
-	ComPtr<ID3D12DescriptorHeap> mSrvDescriptorHeap = nullptr;
+	ComPtr<ID3D12DescriptorHeap> mSrvDescriptorHeap = nullptr;//David：包含了当前程序用到的所有的SRV。RTV和DSV分别保存在D3DApp::mRtvHeap和D3DApp::mDsvHeap里
 
 	std::unordered_map<std::string, std::unique_ptr<MeshGeometry>> mGeometries;
 	std::unordered_map<std::string, std::unique_ptr<Material>> mMaterials;

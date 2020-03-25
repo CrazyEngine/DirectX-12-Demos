@@ -1,0 +1,19 @@
+{
+"Passes":
+[
+	{
+		"PassName": "Floor",
+		"LightMode": "PBRBasic",
+		"VS": "",
+		"FS": "",
+		"Albedo": "",
+		"AlbedoTint": [ 0.8, 0.8, 0.8 ],
+		"AlbedoOffset": [ 0.0, 0.0 ],
+		"AlbedoScale": [ 1.0, 1.0 ],
+		"Emissive": "",
+		"EmissiveTint": [ 1.0, 1.0, 1.0 ],
+		"EmissiveOffset": [ 0.0, 0.0 ],
+		"EmissiveScale": [ 1.0, 1.0 ]
+	}
+]
+}

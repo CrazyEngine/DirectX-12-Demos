@@ -1,0 +1,19 @@
+{
+"Passes":
+[
+	{
+		"PassName": "LeftWall",
+		"LightMode": "PBRBasic",
+		"VS": "",
+		"FS": "",
+		"Albedo": "",
+		"AlbedoTint": [ 0.000000, 0.500000, 0.250000 ],
+		"AlbedoOffset": [ 0.0, 0.0 ],
+		"AlbedoScale": [ 1.0, 1.0 ],
+		"Emissive": "",
+		"EmissiveTint": [ 1.0, 1.0, 1.0 ],
+		"EmissiveOffset": [ 0.0, 0.0 ],
+		"EmissiveScale": [ 1.0, 1.0 ]
+	}
+]
+}

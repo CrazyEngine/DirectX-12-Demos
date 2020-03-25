@@ -1,0 +1,168 @@
+{
+"Scatterers":
+[
+	{
+		"ScattererName": "Lightmap 0",
+		"TextureWidth": 512,
+		"TextureHeight": 512,
+		"SpreadRadius": 5,
+		"GenGI": 1,
+		"BlockRay": 1,
+		"StaticMeshs":
+		[
+			{
+				"EntityName": "BackWall",
+				"MeshName": "MyTestScene\\Model\\StandardQuad.obj",
+				"Materials":
+				[
+					{
+						"MaterialName": "MyTestScene\\Model\\BackWall.mtl"
+					},
+					{
+						"MaterialName": "MyTestScene\\Model\\BackWall.mtl"
+					}
+				],
+				"Rotation": [ 90.0, 0.0, 0.0 ],
+				"Translation": [ 28.0, 0.0, -20.0 ],
+				"Scale": [ -56.0, 1.0, -40.0 ],
+				"LightmapOffset": [ 0.0, 0.0 ],
+				"LightmapScale": [ 0.5, 0.5 ]
+			},
+			{
+				"EntityName": "Ceiling",
+				"MeshName": "MyTestScene\\Model\\StandardQuad.obj",
+				"Materials":
+				[
+					{
+						"MaterialName": "MyTestScene\\Model\\Ceiling.mtl"
+					},
+					{
+						"MaterialName": "MyTestScene\\Model\\Ceiling.mtl"
+					}
+				],
+				"Rotation": [ 0.0, 0.0, 180.0 ],
+				"Translation": [ 28.0, 40.0, -20.0 ],
+				"Scale": [ 56.0, 1.0, 40.0 ],
+				"LightmapOffset": [ 0.5, 0.0 ],
+				"LightmapScale": [ 0.5, 0.5 ]
+			},
+			{
+				"EntityName": "Floor",
+				"MeshName": "MyTestScene\\Model\\StandardQuad.obj",
+				"Materials":
+				[
+					{
+						"MaterialName": "MyTestScene\\Model\\Floor.mtl"
+					},
+					{
+						"MaterialName": "MyTestScene\\Model\\Floor.mtl"
+					}
+				],
+				"Rotation": [ 0.0, 0.0, 0.0 ],
+				"Translation": [ -28.0, 0.0, -20.0 ],
+				"Scale": [ 56.0, 1.0, 40.0 ],
+				"LightmapOffset": [ 0.0, 0.5 ],
+				"LightmapScale": [ 0.5, 0.5 ]
+			}
+		]
+	},
+	{
+		"ScattererName": "Lightmap 1",
+		"TextureWidth": 512,
+		"TextureHeight": 512,
+		"SpreadRadius": 5,
+		"GenGI": 1,
+		"BlockRay": 1,
+		"StaticMeshs":
+		[
+			{
+				"EntityName": "LeftWall",
+				"MeshName": "MyTestScene\\Model\\LeftWall.obj",
+				"Materials":
+				[
+					{
+						"MaterialName": "MyTestScene\\Model\\LeftWall.mtl"
+					}
+				],
+				"Rotation": [ 0.0, 0.0, 0.0 ],
+				"Translation": [ 0.0, 0.0, 0.0 ],
+				"Scale": [ 1.0, 1.0, 1.0 ],
+				"LightmapOffset": [ 0.0, 0.0 ],
+				"LightmapScale": [ 0.5, 0.5 ]
+			},
+			{
+				"EntityName": "RightWall",
+				"MeshName": "MyTestScene\\Model\\RightWall.obj",
+				"Materials":
+				[
+					{
+						"MaterialName": "MyTestScene\\Model\\RightWall.mtl"
+					}
+				],
+				"Rotation": [ 0.0, 0.0, 0.0 ],
+				"Translation": [ 0.0, 0.0, 0.0 ],
+				"Scale": [ 1.0, 1.0, 1.0 ],
+				"LightmapOffset": [ 0.5, 0.0 ],
+				"LightmapScale": [ 0.5, 0.5 ]
+			},
+			{
+				"EntityName": "ShortBox",
+				"MeshName": "MyTestScene\\Model\\ShortBox.obj",
+				"Materials":
+				[
+					{
+						"MaterialName": "MyTestScene\\Model\\ShortBox.mtl"
+					}
+				],
+				"Rotation": [ 0.0, 0.0, 0.0 ],
+				"Translation": [ 0.0, 0.0, 0.0 ],
+				"Scale": [ 1.0, 1.0, 1.0 ],
+				"LightmapOffset": [ 0.0, 0.5 ],
+				"LightmapScale": [ 0.5, 0.5 ]
+			},
+			{
+				"EntityName": "TallBox",
+				"MeshName": "MyTestScene\\Model\\TallBox.obj",
+				"Materials":
+				[
+					{
+						"MaterialName": "MyTestScene\\Model\\TallBox.mtl"
+					}
+				],
+				"Rotation": [ 0.0, 0.0, 0.0 ],
+				"Translation": [ 0.0, 0.0, 0.0 ],
+				"Scale": [ 1.0, 1.0, 1.0 ],
+				"LightmapOffset": [ 0.5, 0.5 ],
+				"LightmapScale": [ 0.5, 0.5 ]
+			}
+		]
+	}
+],
+
+"LightSources":
+[
+	//{
+	//	"Type": "Point",
+	//	"Position": [ 0, 39, 0 ],
+	//	"Color": [ 100.0, 100.0, 100.0 ]
+	//},
+	{
+		"Type": "Spot",
+		//Dynamic Stationary Static
+		"Stage": "Static",
+		"Position": [ 0, 39, -18 ],
+		"Direction": [ 0, -1.0, 0 ],
+		"Color": [ 500.0, 500.0, 500.0 ],
+		"Cutoff": 60,
+		"Falloff": 0
+	},
+	{
+		"Type": "Directional",
+		//Dynamic Stationary Static
+		"Stage": "Static",
+		"Direction": [ -1.0, -1.0, -1.0 ],
+		//"Color": [ 0.93, 0.86, 0.64 ]
+		"Color": [ 3.0, 3.0, 2.64 ]
+	}
+]
+}
