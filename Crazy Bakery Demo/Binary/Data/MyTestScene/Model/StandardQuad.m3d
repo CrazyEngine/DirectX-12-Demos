@@ -1,0 +1,62 @@
+***************m3d-File-Header***************
+#Materials 2
+#Vertices 6
+#Triangles 2
+
+***************Materials*********************
+Name: Floor1
+Diffuse: 1 1 1
+Fresnel0: 0.05 0.05 0.05
+Roughness: 0.5
+AlphaClip: 0
+MaterialTypeName: Skinned
+DiffuseMap: head_diff.dds
+NormalMap: head_norm.dds
+
+Name: Floor2
+Diffuse: 1 1 1
+Fresnel0: 0.05 0.05 0.05
+Roughness: 0.8
+AlphaClip: 0
+MaterialTypeName: Skinned
+DiffuseMap: jacket_diff.dds
+NormalMap: jacket_norm.dds
+
+***************SubsetTable*******************
+SubsetID: 0 VertexStart: 0 VertexCount: 3 FaceStart: 0 FaceCount: 1
+SubsetID: 1 VertexStart: 3 VertexCount: 3 FaceStart: 1 FaceCount: 1
+
+***************Vertices**********************
+Position: 0.000000 0.000000 0.000000
+Tangent: -0.257403 0.5351538 -0.8045831 1
+Normal: 0.000000 1.000000 0.000000
+Tex-Coords: 0.981937 0.019531
+
+Position: 0.000000 0.000000 1.000000
+Tangent: -0.257403 0.5351538 -0.8045831 1
+Normal: 0.000000 1.000000 0.000000
+Tex-Coords: 0.981937 0.706964
+
+Position: 1.000000 0.000000 0.000000
+Tangent: -0.257403 0.5351538 -0.8045831 1
+Normal: 0.000000 1.000000 0.000000
+Tex-Coords: 0.019531 0.019531
+
+Position: 1.000000 0.000000 1.000000
+Tangent: -0.257403 0.5351538 -0.8045831 1
+Normal: 0.000000 1.000000 0.000000
+Tex-Coords: 0.019531 0.706964
+
+Position: 1.000000 0.000000 0.000000
+Tangent: -0.257403 0.5351538 -0.8045831 1
+Normal: 0.000000 1.000000 0.000000
+Tex-Coords: 0.019531 0.019531
+
+Position: 0.000000 0.000000 1.000000
+Tangent: -0.257403 0.5351538 -0.8045831 1
+Normal: 0.000000 1.000000 0.000000
+Tex-Coords: 0.981937 0.706964
+
+***************Triangles*********************
+0 1 2
+3 4 5

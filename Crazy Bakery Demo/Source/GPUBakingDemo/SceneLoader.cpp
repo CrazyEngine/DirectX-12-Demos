@@ -366,7 +366,8 @@ using namespace tinyobj;
 bool LoadMeshUnity(const std::wstring& strPath, IMesh* pMesh)
 {
 	std::wstring strObjPath = g_strAssetPath + strPath;
-	const std::string pathOBJ = /*bake::*/WStringToString(strObjPath);
+	std::string pathOBJ = /*bake::*/WStringToString(strObjPath);
+	pathOBJ += ".obj";
 	const std::string pathMTL = /*bake::*/WStringToString(/*bake::*/GetParent(strObjPath));
 	attrib_t attrib;//所有的顶点属性数据
 	std::vector<shape_t> shapes;//obj里所有的g
@@ -379,7 +380,7 @@ bool LoadMeshUnity(const std::wstring& strPath, IMesh* pMesh)
 	if (!ret)
 		return -1;
 
-	pMesh->m_numVertex = attrib.vertices.size()/3;
+	/*pMesh->m_numVertex = attrib.vertices.size()/3;
 	pMesh->m_pVertexPosition = new MyFloat3[pMesh->m_numVertex];
 	memcpy(pMesh->m_pVertexPosition, &attrib.vertices[0], pMesh->m_numVertex *sizeof(MyFloat3));
 
@@ -388,19 +389,20 @@ bool LoadMeshUnity(const std::wstring& strPath, IMesh* pMesh)
 	memcpy(pMesh->m_pVertexNormal, &attrib.normals[0], pMesh->m_numNormal * sizeof(MyFloat3));
 
 	pMesh->m_numUV = attrib.texcoords.size()/2;
-	pMesh->m_pVertexUV = new MyFloat2[pMesh->m_numUV];
-	memcpy(pMesh->m_pVertexUV, &attrib.texcoords[0], pMesh->m_numUV * sizeof(MyFloat2));
+	pMesh->m_pVertexUV2 = new MyFloat2[pMesh->m_numUV];
+	memcpy(pMesh->m_pVertexUV2, &attrib.texcoords[0], pMesh->m_numUV * sizeof(MyFloat2));*/
 
 	//David: TODO 加UV2
 
-	//
+	//根据材质分组顶点
 	std::vector< std::map<int, std::vector<int>> > GeometryGroup;//first保存的是材质索引号，second是使用某种材质的所有的面的三个索引
 	GeometryGroup.resize(shapes.size());
 	size_t numMaterial = 0;
+	size_t numFaces = 0;
 	for (size_t iGeometry = 0; iGeometry < shapes.size(); iGeometry++)//遍历obj里所有的g
 	{
 		std::map<int, std::vector<int>>& Geometry = GeometryGroup[iGeometry];
-		pMesh->m_numFaces += shapes[iGeometry].mesh.material_ids.size();//mesh_t::material_ids里存储的每个元素是某个面的材质索引
+		numFaces += shapes[iGeometry].mesh.material_ids.size();//mesh_t::material_ids里存储的每个元素是某个面的材质索引
 
 		//将某个g里的所有面根据材质进行分组
 		std::map<int, std::vector<int>> mg;
@@ -421,14 +423,26 @@ bool LoadMeshUnity(const std::wstring& strPath, IMesh* pMesh)
 
 		numMaterial += Geometry.size();
 	}
-	//
-	int numFaces = pMesh->m_numFaces;
+	
+	//拷贝顶点缓冲区
+	size_t numVertex = attrib.vertices.size() / 3;
+	size_t numNormal = attrib.normals.size() / 3;
+	size_t numUVs = attrib.texcoords.size() / 2;
+	pMesh->ResizeBuffers(numVertex, numNormal, numUVs, numUVs, numFaces);
+	memcpy(pMesh->m_pVertexPosition, &attrib.vertices[0], numVertex * sizeof(MyFloat3));
+	memcpy(pMesh->m_pVertexNormal, &attrib.normals[0], numNormal * sizeof(MyFloat3));
+	memcpy(pMesh->m_pVertexUV2, &attrib.texcoords[0], numUVs * sizeof(MyFloat2));
+
+	//调整SubMesh的个数
+	pMesh->ResizeSubMeshes(numMaterial);
+
+	/*int numFaces = pMesh->m_numFaces;
 	pMesh->m_pVertexIndices = new MyInt3[numFaces];
 	pMesh->m_pVertexNormalIndex = new MyInt3[numFaces];
 	pMesh->m_pVertexUVIndex = new MyInt3[numFaces];
 	pMesh->_pFaceNormals = new MyFloat3[numFaces];
 	pMesh->m_numSubMesh = numMaterial;
-	pMesh->m_pSubMeshes = new IMesh::ISubMesh[numMaterial];
+	pMesh->m_pSubMeshes = new IMesh::ISubMesh[numMaterial];*/
 
 	int numOffset = 0;
 	for (size_t iGeometry = 0; iGeometry < shapes.size(); iGeometry++)//遍历obj里所有的g
@@ -460,7 +474,7 @@ bool LoadMeshUnity(const std::wstring& strPath, IMesh* pMesh)
 					Index[iVerts[vi + 2]].texcoord_index };
 				memcpy(pMesh->m_pVertexIndices + numOffset,&pid,sizeof(MyInt3));
 				memcpy(pMesh->m_pVertexNormalIndex + numOffset, &nid, sizeof(MyInt3));
-				memcpy(pMesh->m_pVertexUVIndex + numOffset, &uid, sizeof(MyInt3));
+				memcpy(pMesh->m_pVertexUV2Index + numOffset, &uid, sizeof(MyInt3));
 
 				//David: TODO 加UV2
 
@@ -482,121 +496,71 @@ bool LoadMeshUnity(const std::wstring& strPath, IMesh* pMesh)
 
 	return true;
 }
+
 #else
+
+#include "LoadM3d.h"
 bool LoadM3D(const std::wstring& strPath, IMesh* pMesh)
 {
-	std::wstring strObjPath = g_strAssetPath + strPath;
-	const std::string pathOBJ = /*bake::*/WStringToString(strObjPath);
-	const std::string pathMTL = /*bake::*/WStringToString(/*bake::*/GetParent(strObjPath));
-	attrib_t attrib;//所有的顶点属性数据
-	std::vector<shape_t> shapes;//obj里所有的g
-	std::vector<material_t> materials;//obj里所有的材质
+	std::vector<M3DLoader::Subset> mSubsets;//David：只在LoadSkinnedModel()里面加载模型时使用，对应的是m3d模型里的SubsetTable
+	std::vector<M3DLoader::M3dMaterial> mMats;//David：在LoadSkinnedModel()里面加载模型时会使用，对应的是m3d模型里的Materials
+	std::vector<M3DLoader::Vertex> vertices;
+	std::vector<std::uint16_t> indices;//所有三角形的顶点索引
 
-	std::string warn, err;
-	//调用下面的函数时，必须提供obj所在的文件夹的路径，否则加载材质会失败，这样所有的面的材质ID都会是-1
-	bool ret = tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, pathOBJ.c_str(), pathMTL.c_str());
+	//Load model data from .m3d file
+	M3DLoader m3dLoader;
+	std::wstring strModelFilenameW = g_strAssetPath + strPath;
+	std::string strModelFilename = WStringToString(strModelFilenameW);
+	strModelFilename += ".m3d";
+	m3dLoader.LoadM3d(strModelFilename, vertices, indices, mSubsets, mMats);
 
-	if (!ret)
-		return -1;
+	//初始化各种缓冲区
+	size_t numVertex = vertices.size();
+	size_t numFaces = indices.size() / 3;
+	size_t numSubMeshes = mSubsets.size();
+	pMesh->ResizeBuffers(numVertex, numFaces);
 
-	pMesh->m_numVertex = attrib.vertices.size() / 3;
-	pMesh->m_pVertexPosition = new MyFloat3[pMesh->m_numVertex];
-	memcpy(pMesh->m_pVertexPosition, &attrib.vertices[0], pMesh->m_numVertex * sizeof(MyFloat3));
-
-	pMesh->m_numNormal = attrib.normals.size() / 3;
-	pMesh->m_pVertexNormal = new MyFloat3[pMesh->m_numNormal];
-	memcpy(pMesh->m_pVertexNormal, &attrib.normals[0], pMesh->m_numNormal * sizeof(MyFloat3));
-
-	pMesh->m_numUV = attrib.texcoords.size() / 2;
-	pMesh->m_pVertexUV = new MyFloat2[pMesh->m_numUV];
-	memcpy(pMesh->m_pVertexUV, &attrib.texcoords[0], pMesh->m_numUV * sizeof(MyFloat2));
-
-	//David: TODO 加UV2
-
-	//
-	std::vector< std::map<int, std::vector<int>> > GeometryGroup;//first保存的是材质索引号，second是使用某种材质的所有的面的三个索引
-	GeometryGroup.resize(shapes.size());
-	size_t numMaterial = 0;
-	for (size_t iGeometry = 0; iGeometry < shapes.size(); iGeometry++)//遍历obj里所有的g
+	//拷贝顶点缓冲区
+	for (size_t i = 0; i < numVertex; ++i)
 	{
-		std::map<int, std::vector<int>>& Geometry = GeometryGroup[iGeometry];
-		pMesh->m_numFaces += shapes[iGeometry].mesh.material_ids.size();//mesh_t::material_ids里存储的每个元素是某个面的材质索引
-
-		//将某个g里的所有面根据材质进行分组
-		std::map<int, std::vector<int>> mg;
-		for (int mi = 0; mi < shapes[iGeometry].mesh.material_ids.size(); mi++)
-		{
-			const int mid = shapes[iGeometry].mesh.material_ids[mi];
-			Geometry[mid].push_back(mi * 3);
-			Geometry[mid].push_back(mi * 3 + 1);
-			Geometry[mid].push_back(mi * 3 + 2);
-		}
-		//为了保证obj里的submesh顺序和场景文件里材质顺序完全一致（因为
-		//map里的顺序是材质索引号，很可能跟场景文件里设置的材质顺序是冲突的），
-		//规定一个g里只允许有一个材质，每一个g对应一个submesh
-		if (1 != Geometry.size())
-		{
-			MessageBoxW(NULL, L"In obj file, one g only allows for one material!", L"", MB_OK);
-		}
-
-		numMaterial += Geometry.size();
+		memcpy(pMesh->m_pVertexPosition + i, &vertices[i].Pos, sizeof(MyFloat3));
+		memcpy(pMesh->m_pVertexNormal + i, &vertices[i].Normal, sizeof(MyFloat3));
+		memcpy(pMesh->m_pVertexUV2 + i, &vertices[i].TexC, sizeof(MyFloat2));
 	}
-	//
-	int numFaces = pMesh->m_numFaces;
-	pMesh->m_pVertexIndices = new MyInt3[numFaces];
-	pMesh->m_pVertexNormalIndex = new MyInt3[numFaces];
-	pMesh->m_pVertexUVIndex = new MyInt3[numFaces];
-	pMesh->_pFaceNormals = new MyFloat3[numFaces];
-	pMesh->m_numSubMesh = numMaterial;
-	pMesh->m_pSubMeshes = new IMesh::ISubMesh[numMaterial];
 
-	int numOffset = 0;
-	for (size_t iGeometry = 0; iGeometry < shapes.size(); iGeometry++)//遍历obj里所有的g
+	//拷贝索引缓冲区。注意：不能用memcpy直接拷贝，因为M3DLoader返回的索引indices是unsigned short类型的，而optix要使用int
+	for (size_t i = 0; i < numFaces; ++i)
 	{
-		std::map<int, std::vector<int>>& Geometry = GeometryGroup[iGeometry];
-		std::map<int, std::vector<int>>::iterator it = Geometry.begin();
-		for (size_t i = 0; it != Geometry.end(); it++, ++i)//遍历g里所有的材质，目前只允许有一个
-		{
-			IMesh::ISubMesh& cSubMesh = pMesh->m_pSubMeshes[iGeometry];
-			cSubMesh.m_numOffset = numOffset;
-			cSubMesh.m_numFaces = it->second.size() / 3;
+		pMesh->m_pVertexIndices[i].x = indices[3 * i + 0];
+		pMesh->m_pVertexIndices[i].y = indices[3 * i + 1];
+		pMesh->m_pVertexIndices[i].z = indices[3 * i + 2];
+	}
 
-			const std::vector<index_t>& Index = shapes[iGeometry].mesh.indices;
-			const std::vector<int>& iVerts = it->second;
-			for (int vi = 0; vi < iVerts.size(); vi += 3)//遍历使用某材质的所有的面
-			{
-				//mesh_t::indices包含了所有面的所有顶点的索引
-				const MyInt3 pid = MyInt3{
-					Index[iVerts[vi + 0]].vertex_index,
-					Index[iVerts[vi + 1]].vertex_index,
-					Index[iVerts[vi + 2]].vertex_index };
-				const MyInt3 nid = MyInt3{
-					Index[iVerts[vi + 0]].normal_index,
-					Index[iVerts[vi + 1]].normal_index,
-					Index[iVerts[vi + 2]].normal_index };
-				const MyInt3 uid = MyInt3{
-					Index[iVerts[vi + 0]].texcoord_index,
-					Index[iVerts[vi + 1]].texcoord_index,
-					Index[iVerts[vi + 2]].texcoord_index };
-				memcpy(pMesh->m_pVertexIndices + numOffset, &pid, sizeof(MyInt3));
-				memcpy(pMesh->m_pVertexNormalIndex + numOffset, &nid, sizeof(MyInt3));
-				memcpy(pMesh->m_pVertexUVIndex + numOffset, &uid, sizeof(MyInt3));
+	//计算面法线
+	for (size_t iFace = 0; iFace < numFaces; ++iFace)
+	{
+		std::uint16_t iFirst = indices[3 * iFace + 0];
+		std::uint16_t iSecond = indices[3 * iFace + 1];
+		std::uint16_t iThird = indices[3 * iFace + 2];
+		MyFloat3 vFaceNormal = ComputeFaceNormal(
+			pMesh->m_pVertexPosition[iFirst],
+			pMesh->m_pVertexPosition[iSecond],
+			pMesh->m_pVertexPosition[iThird],
+			pMesh->m_pVertexNormal[iFirst],
+			pMesh->m_pVertexNormal[iSecond],
+			pMesh->m_pVertexNormal[iThird]
+		);
+		memcpy(pMesh->_pFaceNormals + iFace, &vFaceNormal, sizeof(MyFloat3));
+	}
 
-				//David: TODO 加UV2
-
-				MyFloat3 vFaceNormal = ComputeFaceNormal(
-					pMesh->m_pVertexPosition[pid.x],
-					pMesh->m_pVertexPosition[pid.y],
-					pMesh->m_pVertexPosition[pid.z],
-					pMesh->m_pVertexNormal[nid.x],
-					pMesh->m_pVertexNormal[nid.y],
-					pMesh->m_pVertexNormal[nid.z]
-				);
-				memcpy(pMesh->_pFaceNormals + numOffset, &vFaceNormal, sizeof(MyFloat3));
-
-				++numOffset;
-			}//end //遍历使用某材质的所有的面
-		}//遍历所有的材质结束
+	//调整SubMesh的个数
+	pMesh->ResizeSubMeshes(numSubMeshes);
+	//设置每一个SubMesh
+	for (size_t iSubMesh = 0; iSubMesh < numSubMeshes; ++iSubMesh)
+	{
+		IMesh::ISubMesh& cSubMesh = pMesh->m_pSubMeshes[iSubMesh];
+		cSubMesh.m_numOffset = mSubsets[iSubMesh].FaceStart;
+		cSubMesh.m_numFaces = (UINT)mSubsets[iSubMesh].FaceCount;
 	}
 
 	return true;

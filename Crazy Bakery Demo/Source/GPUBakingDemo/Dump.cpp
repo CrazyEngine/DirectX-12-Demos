@@ -181,14 +181,23 @@ using namespace std;
 					MyFloat3 Pos = matWorld * pMesh->m_pVertexPosition[i];
 					obj << L"v " << Pos.x << L' ' << Pos.y << L' ' << Pos.z << endl;
 				}
-				for (size_t i = 0; i < pMesh->m_numUV; i++)
+#ifdef VertexAttributeUseDifferentIndex
+				for (size_t i = 0; i < pMesh->m_numUV2; i++)
+#else
+				for (size_t i = 0; i < pMesh->m_numVertex; i++)
+#endif
+				
 				{
-					MyFloat2 UV = pMesh->m_pVertexUV[i];
+					MyFloat2 UV = pMesh->m_pVertexUV2[i];
 					UV *= pEntity->m_vMapScale;
 					UV += pEntity->m_vMapOffset;
 					obj << L"vt " << UV.x << L' ' << UV.y << endl;
 				}
+#ifdef VertexAttributeUseDifferentIndex
 				for (size_t i = 0; i < pMesh->m_numNormal; i++)
+#else
+				for (size_t i = 0; i < pMesh->m_numVertex; i++)
+#endif
 				{
 					const MyMatrix3x3& matWorld3x3 = pEntity->m_matWorld3x3;
 					//TODO 验证是否正确，应该是逆矩阵的转置矩阵
@@ -237,9 +246,18 @@ using namespace std;
 						const MyInt3& nid = pMesh->m_pVertexIndices[pSubMesh->m_numOffset + i];
 
 						obj << L"f ";
-						if (pMesh->m_numUV)
+#ifdef VertexAttributeUseDifferentIndex
+						if (pMesh->m_numUV2)
+#else
+						if (pMesh->m_numVertex)
+#endif
 						{
-							const MyInt3 uid = pMesh->m_pVertexUVIndex[pSubMesh->m_numOffset + i];
+#ifdef VertexAttributeUseDifferentIndex
+							MyInt3* VertexUVIndex = pMesh->m_pVertexUV2Index;
+#else
+							MyInt3* VertexUVIndex = pMesh->m_pVertexIndices;
+#endif
+							const MyInt3 uid = VertexUVIndex[pSubMesh->m_numOffset + i];
 							obj << poff + pid.x << L"/" << uoff + uid.x << L"/" << noff + nid.x << L' ';
 							obj << poff + pid.y << L"/" << uoff + uid.y << L"/" << noff + nid.y << L' ';
 							obj << poff + pid.z << L"/" << uoff + uid.z << L"/" << noff + nid.z << endl;
@@ -253,9 +271,16 @@ using namespace std;
 					}
 				}
 
+#ifdef VertexAttributeUseDifferentIndex
 				poff += pMesh->m_numVertex;
 				noff += pMesh->m_numNormal;
-				uoff += pMesh->m_numUV;
+				uoff += pMesh->m_numUV2;
+#else
+				poff += pMesh->m_numVertex;
+				noff += pMesh->m_numVertex;
+				uoff += pMesh->m_numVertex;
+#endif
+				
 			}//end of entity
 		}//end of scatterer
 

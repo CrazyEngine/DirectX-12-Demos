@@ -13,6 +13,7 @@ public:
         DirectX::XMFLOAT3 Pos;
         DirectX::XMFLOAT3 Normal;
         DirectX::XMFLOAT2 TexC;
+		DirectX::XMFLOAT2 UV2;
         DirectX::XMFLOAT4 TangentU;
     };
 

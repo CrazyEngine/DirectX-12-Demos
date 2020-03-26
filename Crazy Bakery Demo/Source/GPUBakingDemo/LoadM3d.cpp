@@ -11,21 +11,23 @@ bool M3DLoader::LoadM3d(const std::string& filename,
 	std::ifstream fin(filename);
 
 	UINT numMaterials = 0;
-	UINT numVertices  = 0;
+	UINT numVertices = 0;
 	UINT numTriangles = 0;
-	UINT numBones     = 0;
-	UINT numAnimationClips = 0;
+	//David：下面两个信息在静态模型里不应该有
+	//UINT numBones     = 0;
+	//UINT numAnimationClips = 0;
 
 	std::string ignore;
 
-	if( fin )
+	if (fin)
 	{
 		fin >> ignore; // file header text
 		fin >> ignore >> numMaterials;
 		fin >> ignore >> numVertices;
 		fin >> ignore >> numTriangles;
-		fin >> ignore >> numBones;
-		fin >> ignore >> numAnimationClips;
+		//David：下面两个信息在静态模型里不应该有
+		//fin >> ignore >> numBones;
+		//fin >> ignore >> numAnimationClips;
  
 		ReadMaterials(fin, numMaterials, mats);
 		ReadSubsetTable(fin, numMaterials, subsets);

@@ -132,24 +132,28 @@ public:
 	IMesh();
 	virtual ~IMesh();
 
-	/*static IMesh* CreateMesh(const wchar_t* strName);
-	static IMesh* GetMesh(const wchar_t* strName);
-	static void DestroyAll();*/
+#ifdef VertexAttributeUseDifferentIndex
+	bool ResizeBuffers(size_t numVertices, size_t numNormals, size_t numUVs, size_t numUV2s, size_t numFaces);
+#else
+	bool ResizeBuffers(size_t numVertices, size_t numFaces);
+#endif
+	bool ResizeSubMeshes(size_t numSubMeshes);
 
 	size_t m_numVertex = 0;
 	MyFloat3* m_pVertexPosition = NULL;
-	size_t m_numNormal = 0;
 	MyFloat3* m_pVertexNormal = NULL;
-	size_t m_numUV = 0;
 	MyFloat2* m_pVertexUV = NULL;
-	size_t m_numUV2 = 0;
 	MyFloat2* m_pVertexUV2 = NULL;
 
 	size_t m_numFaces = 0;//下面缓冲区的元素个数都是这个数值
 	MyInt3* m_pVertexIndices = NULL;
 #ifdef VertexAttributeUseDifferentIndex
+	size_t m_numNormal = 0;
+//	size_t m_numUV = 0;
+	size_t m_numUV2 = 0;
+
 	MyInt3* m_pVertexNormalIndex = NULL;
-	MyInt3* m_pVertexUVIndex = NULL;
+//	MyInt3* m_pVertexUVIndex = NULL;
 	MyInt3* m_pVertexUV2Index = NULL;
 #endif
 	MyFloat3* _pFaceNormals = NULL;//每个元素是某个面的法线，加载时计算出来的

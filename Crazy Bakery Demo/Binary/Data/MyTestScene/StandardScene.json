@@ -12,7 +12,7 @@
 		[
 			{
 				"EntityName": "BackWall",
-				"MeshName": "MyTestScene\\Model\\StandardQuad.obj",
+				"MeshName": "MyTestScene\\Model\\StandardQuad",
 				"Materials":
 				[
 					{
@@ -30,7 +30,7 @@
 			},
 			{
 				"EntityName": "Ceiling",
-				"MeshName": "MyTestScene\\Model\\StandardQuad.obj",
+				"MeshName": "MyTestScene\\Model\\StandardQuad",
 				"Materials":
 				[
 					{
@@ -48,7 +48,7 @@
 			},
 			{
 				"EntityName": "Floor",
-				"MeshName": "MyTestScene\\Model\\StandardQuad.obj",
+				"MeshName": "MyTestScene\\Model\\StandardQuad",
 				"Materials":
 				[
 					{
@@ -77,7 +77,7 @@
 		[
 			{
 				"EntityName": "LeftWall",
-				"MeshName": "MyTestScene\\Model\\LeftWall.obj",
+				"MeshName": "MyTestScene\\Model\\LeftWall",
 				"Materials":
 				[
 					{
@@ -92,7 +92,7 @@
 			},
 			{
 				"EntityName": "RightWall",
-				"MeshName": "MyTestScene\\Model\\RightWall.obj",
+				"MeshName": "MyTestScene\\Model\\RightWall",
 				"Materials":
 				[
 					{
@@ -107,7 +107,7 @@
 			},
 			{
 				"EntityName": "ShortBox",
-				"MeshName": "MyTestScene\\Model\\ShortBox.obj",
+				"MeshName": "MyTestScene\\Model\\ShortBox",
 				"Materials":
 				[
 					{
@@ -122,7 +122,7 @@
 			},
 			{
 				"EntityName": "TallBox",
-				"MeshName": "MyTestScene\\Model\\TallBox.obj",
+				"MeshName": "MyTestScene\\Model\\TallBox",
 				"Materials":
 				[
 					{

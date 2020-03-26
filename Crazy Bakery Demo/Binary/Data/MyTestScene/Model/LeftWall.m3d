@@ -1,0 +1,52 @@
+***************m3d-File-Header***************
+#Materials 1
+#Vertices 6
+#Triangles 2
+
+***************Materials*********************
+Name: LeftWall1
+Diffuse: 1 1 1
+Fresnel0: 0.05 0.05 0.05
+Roughness: 0.5
+AlphaClip: 0
+MaterialTypeName: Skinned
+DiffuseMap: head_diff.dds
+NormalMap: head_norm.dds
+
+***************SubsetTable*******************
+SubsetID: 0 VertexStart: 0 VertexCount: 6 FaceStart: 0 FaceCount: 2
+
+***************Vertices**********************
+Position: -28.000000 0.000000 20.000000
+Tangent: -0.257403 0.5351538 -0.8045831 1
+Normal: 1.000000 0.000000 0.000000
+Tex-Coords: 0.019531 0.019531
+
+Position: -28.000000 0.000000 -20.000000
+Tangent: -0.257403 0.5351538 -0.8045831 1
+Normal: 1.000000 0.000000 0.000000
+Tex-Coords: 0.981937 0.019531
+
+Position: -28.000000 40.000000 20.000000
+Tangent: -0.257403 0.5351538 -0.8045831 1
+Normal: 1.000000 0.000000 0.000000
+Tex-Coords: 0.019531 0.981936
+
+Position: -28.000000 40.000000 -20.000000
+Tangent: -0.257403 0.5351538 -0.8045831 1
+Normal: 1.000000 0.000000 0.000000
+Tex-Coords: 0.981937 0.981936
+
+Position: -28.000000 40.000000 20.000000
+Tangent: -0.257403 0.5351538 -0.8045831 1
+Normal: 1.000000 0.000000 0.000000
+Tex-Coords: 0.019531 0.981936
+
+Position: -28.000000 0.000000 -20.000000
+Tangent: -0.257403 0.5351538 -0.8045831 1
+Normal: 1.000000 0.000000 0.000000
+Tex-Coords: 0.981937 0.019531
+
+***************Triangles*********************
+0 1 2
+3 4 5

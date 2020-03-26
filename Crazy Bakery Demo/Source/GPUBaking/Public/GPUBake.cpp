@@ -54,11 +54,11 @@ IMesh::~IMesh()
 		m_pVertexNormalIndex = NULL;
 	}
 
-	if (m_pVertexUVIndex)
+	/*if (m_pVertexUVIndex)
 	{
 		delete[] m_pVertexUVIndex;
 		m_pVertexUVIndex = NULL;
-	}
+	}*/
 
 	if (m_pVertexUV2Index)
 	{
@@ -80,43 +80,77 @@ IMesh::~IMesh()
 	}
 }
 
-//IMesh* IMesh::GetMesh(const wchar_t* strName)
-//{
-//	std::map<std::wstring, IMesh*>::iterator it = s_vMeshes.find(strName);
-//	if (it == s_vMeshes.end())
-//	{
-//		return NULL;
-//	}
-//	else
-//	{
-//		return it->second;
-//	}
-//}
-//IMesh* IMesh::CreateMesh(const wchar_t* strName)
-//{
-//	assert(NULL == GetMesh(strName));
-//	IMesh* pMesh = new IMesh;
-//	s_vMeshes[strName] = pMesh;
-//}
+#ifdef VertexAttributeUseDifferentIndex
+bool IMesh::ResizeBuffers(size_t numVertices, size_t numNormals, size_t numUVs, size_t numUV2s, size_t numFaces)
+#else
+bool IMesh::ResizeBuffers(size_t numVertices, size_t numFaces)
+#endif
+{
+	m_numVertex = numVertices;
+	m_numFaces = numFaces;
 
-//void IMesh::DestroyAll()
-//{
-//	std::map<std::wstring, IMesh*>::iterator it = s_vMeshes.begin();
-//	for (;it!= s_vMeshes.end();++it)
-//	{
-//		if (it->second)
-//		{
-//			delete it->second;
-//		}
-//	}
-//	s_vMeshes.clear();
-//}
+	if (m_pVertexPosition)
+		delete m_pVertexPosition;
+	m_pVertexPosition = new MyFloat3[numVertices];
 
-//IMesh::CSubMesh& IMesh::GetSubMesh(size_t i)
-//{
-//	assert(i<m_vSubMeshes.size());
-//	return m_vSubMeshes[i];
-//}
+#ifdef VertexAttributeUseDifferentIndex
+	m_numNormal = numNormals;
+	if (m_pVertexNormal)
+		delete m_pVertexNormal;
+	m_pVertexNormal = new MyFloat3[numNormals];
+
+	m_numUV2 = numUV2s;
+	if (m_pVertexUV2)
+		delete m_pVertexUV2;
+	m_pVertexUV2 = new MyFloat2[numUV2s];
+#else
+	if (m_pVertexNormal)
+		delete m_pVertexNormal;
+	m_pVertexNormal = new MyFloat3[numVertices];
+
+	if (m_pVertexUV2)
+		delete m_pVertexUV2;
+	m_pVertexUV2 = new MyFloat2[numVertices];
+#endif
+	
+
+	if (m_pVertexIndices)
+		delete m_pVertexIndices;
+	m_pVertexIndices = new MyInt3[numFaces];
+
+	if (_pFaceNormals)
+		delete _pFaceNormals;
+	_pFaceNormals = new MyFloat3[numFaces];
+
+#ifdef VertexAttributeUseDifferentIndex
+	if (m_pVertexNormalIndex)
+		delete m_pVertexNormalIndex;
+	m_pVertexNormalIndex = new MyInt3[numNormals];
+
+	/*if (m_pVertexUVIndex)
+		delete m_pVertexUVIndex;
+	m_pVertexUVIndex = new MyFloat3[numUVs];*/
+
+	if (m_pVertexUV2Index)
+		delete m_pVertexUV2Index;
+	m_pVertexUV2Index = new MyInt3[numUV2s];
+#endif
+
+	return true;
+}
+
+bool IMesh::ResizeSubMeshes(size_t numSubMeshes)
+{
+	if (m_pSubMeshes)
+		delete[] m_pSubMeshes;
+	m_pSubMeshes = new IMesh::ISubMesh[numSubMeshes];
+
+	m_numSubMesh = numSubMeshes;
+
+	return true;
+}
+
+
 
 std::map<std::wstring, ITexture*> m_vTextures;
 
