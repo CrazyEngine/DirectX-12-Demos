@@ -93,12 +93,12 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\Dependency\tinyobjloader\;$(SolutionDir)..\Dependency\jsoncpp\;$(SolutionDir)\GPUBaking\public\;$(SolutionDir)..\Dependency\FreeImage\include\;$(SolutionDir)..\Dependency\cuda\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\Dependency\tinyobjloader\;$(SolutionDir)\Dependency\jsoncpp\;$(SolutionDir)\Dependency\FreeImage\include\;$(SolutionDir)\Dependency\cuda\include\;$(SolutionDir)\GPUBaking\public\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\Dependency\FreeImage\lib-$(PlatformTarget);$(OutDir)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)\Dependency\FreeImage\lib-$(PlatformTarget);$(OutDir)</AdditionalLibraryDirectories>
       <AdditionalDependencies>freeimage.lib;GPUBaking_d.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -144,87 +144,87 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\Dependency\tinyobjloader\;$(SolutionDir)..\Dependency\jsoncpp\;$(SolutionDir)\GPUBaking\public\;$(SolutionDir)..\Dependency\FreeImage\include\;$(SolutionDir)..\Dependency\cuda\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\Dependency\tinyobjloader\;$(SolutionDir)\Dependency\jsoncpp\;$(SolutionDir)\Dependency\FreeImage\include\;$(SolutionDir)\Dependency\cuda\include\;$(SolutionDir)\GPUBaking\public\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\Dependency\FreeImage\lib-$(PlatformTarget);$(OutDir)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)\Dependency\FreeImage\lib-$(PlatformTarget);$(OutDir)</AdditionalLibraryDirectories>
       <AdditionalDependencies>freeimage.lib;GPUBaking.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Common\Camera.h" />
-    <ClInclude Include="..\..\Common\d3dApp.h" />
-    <ClInclude Include="..\..\Common\d3dUtil.h" />
-    <ClInclude Include="..\..\Common\d3dx12.h" />
-    <ClInclude Include="..\..\Common\DDSTextureLoader.h" />
-    <ClInclude Include="..\..\Common\GameTimer.h" />
-    <ClInclude Include="..\..\Common\GeometryGenerator.h" />
-    <ClInclude Include="..\..\Common\MathHelper.h" />
-    <ClInclude Include="..\..\Common\UploadBuffer.h" />
-    <ClInclude Include="..\..\Dependency\jsoncpp\json\json-forwards.h" />
-    <ClInclude Include="..\..\Dependency\jsoncpp\json\json.h" />
+    <ClInclude Include="..\Dependency\jsoncpp\json\json-forwards.h" />
+    <ClInclude Include="..\Dependency\jsoncpp\json\json.h" />
+    <ClInclude Include="Common\Camera.h" />
+    <ClInclude Include="Common\d3dApp.h" />
+    <ClInclude Include="Common\d3dUtil.h" />
+    <ClInclude Include="Common\d3dx12.h" />
+    <ClInclude Include="Common\DDSTextureLoader.h" />
+    <ClInclude Include="Common\GameTimer.h" />
+    <ClInclude Include="Common\GeometryGenerator.h" />
+    <ClInclude Include="Common\MathHelper.h" />
+    <ClInclude Include="Common\UploadBuffer.h" />
     <ClInclude Include="Dump.h" />
+    <ClInclude Include="Engine\LoadM3d.h" />
+    <ClInclude Include="Engine\SkinnedData.h" />
     <ClInclude Include="File.h" />
     <ClInclude Include="GPUBakingDemo.h" />
     <ClInclude Include="Image.h" />
-    <ClInclude Include="LoadM3d.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="SceneLoader.h" />
-    <ClInclude Include="SkinnedData.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="String.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Common\Camera.cpp">
+    <ClCompile Include="..\Dependency\jsoncpp\jsoncpp.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Common\Camera.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\..\Common\d3dApp.cpp">
+    <ClCompile Include="Common\d3dApp.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\..\Common\d3dUtil.cpp">
+    <ClCompile Include="Common\d3dUtil.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\..\Common\DDSTextureLoader.cpp">
+    <ClCompile Include="Common\DDSTextureLoader.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\..\Common\GameTimer.cpp">
+    <ClCompile Include="Common\GameTimer.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\..\Common\GeometryGenerator.cpp">
+    <ClCompile Include="Common\GeometryGenerator.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\..\Common\MathHelper.cpp">
+    <ClCompile Include="Common\MathHelper.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="..\..\Dependency\jsoncpp\jsoncpp.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Dump.cpp" />
+    <ClCompile Include="Engine\LoadM3d.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Engine\SkinnedData.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="File.cpp" />
     <ClCompile Include="GPUBakingDemo.cpp" />
     <ClCompile Include="Image.cpp" />
-    <ClCompile Include="LoadM3d.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
     <ClCompile Include="SceneLoader.cpp" />
-    <ClCompile Include="SkinnedData.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

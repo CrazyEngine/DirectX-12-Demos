@@ -41,12 +41,6 @@
     <ClInclude Include="String.h">
       <Filter>源文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Dependency\jsoncpp\json\json-forwards.h">
-      <Filter>Dependency\jsoncpp</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Dependency\jsoncpp\json\json.h">
-      <Filter>Dependency\jsoncpp</Filter>
-    </ClInclude>
     <ClInclude Include="File.h">
       <Filter>源文件</Filter>
     </ClInclude>
@@ -56,38 +50,44 @@
     <ClInclude Include="Dump.h">
       <Filter>源文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Common\Camera.h">
+    <ClInclude Include="Common\Camera.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Common\d3dApp.h">
+    <ClInclude Include="Common\d3dApp.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Common\d3dUtil.h">
+    <ClInclude Include="Common\d3dUtil.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Common\d3dx12.h">
+    <ClInclude Include="Common\d3dx12.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Common\DDSTextureLoader.h">
+    <ClInclude Include="Common\DDSTextureLoader.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Common\GameTimer.h">
+    <ClInclude Include="Common\GameTimer.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Common\GeometryGenerator.h">
+    <ClInclude Include="Common\GeometryGenerator.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Common\MathHelper.h">
+    <ClInclude Include="Common\MathHelper.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Common\UploadBuffer.h">
+    <ClInclude Include="Common\UploadBuffer.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="LoadM3d.h">
+    <ClInclude Include="Engine\LoadM3d.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="SkinnedData.h">
+    <ClInclude Include="Engine\SkinnedData.h">
       <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Dependency\jsoncpp\json\json.h">
+      <Filter>Dependency\jsoncpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Dependency\jsoncpp\json\json-forwards.h">
+      <Filter>Dependency\jsoncpp</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -100,9 +100,6 @@
     <ClCompile Include="SceneLoader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Dependency\jsoncpp\jsoncpp.cpp">
-      <Filter>Dependency\jsoncpp</Filter>
-    </ClCompile>
     <ClCompile Include="File.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -112,32 +109,35 @@
     <ClCompile Include="Dump.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Common\Camera.cpp">
+    <ClCompile Include="Common\Camera.cpp">
       <Filter>Common</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Common\d3dApp.cpp">
+    <ClCompile Include="Common\d3dApp.cpp">
       <Filter>Common</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Common\d3dUtil.cpp">
+    <ClCompile Include="Common\d3dUtil.cpp">
       <Filter>Common</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Common\DDSTextureLoader.cpp">
+    <ClCompile Include="Common\DDSTextureLoader.cpp">
       <Filter>Common</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Common\GameTimer.cpp">
+    <ClCompile Include="Common\GameTimer.cpp">
       <Filter>Common</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Common\GeometryGenerator.cpp">
+    <ClCompile Include="Common\GeometryGenerator.cpp">
       <Filter>Common</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Common\MathHelper.cpp">
+    <ClCompile Include="Common\MathHelper.cpp">
       <Filter>Common</Filter>
     </ClCompile>
-    <ClCompile Include="LoadM3d.cpp">
+    <ClCompile Include="Engine\LoadM3d.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
-    <ClCompile Include="SkinnedData.cpp">
+    <ClCompile Include="Engine\SkinnedData.cpp">
       <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Dependency\jsoncpp\jsoncpp.cpp">
+      <Filter>Dependency\jsoncpp</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

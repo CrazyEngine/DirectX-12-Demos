@@ -1,8 +1,8 @@
 #ifndef SKINNEDDATA_H
 #define SKINNEDDATA_H
 
-#include "../../Common/d3dUtil.h"
-#include "../../Common/MathHelper.h"
+#include "../Common/d3dUtil.h"
+#include "../Common/MathHelper.h"
 
 ///<summary>
 /// A Keyframe defines the bone transformation at an instant in time.
