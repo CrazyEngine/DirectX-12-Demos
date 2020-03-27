@@ -157,6 +157,15 @@ std::map<std::wstring, ITexture*> m_vTextures;
 class CMaterialImpl : public IMaterial
 {
 public:
+	CMaterialImpl()
+	{
+
+	}
+	virtual ~CMaterialImpl()
+	{
+
+	}
+
 	virtual void SetName(const wchar_t* pName)
 	{
 		m_strName = pName;
@@ -590,10 +599,17 @@ public:
 
 	virtual IMaterial* CreateMaterial(const wchar_t* strName)
 	{
-		//assert(NULL == GetMaterial(strName));
-		IMaterial* pMaterial = new CMaterialImpl;
-		_vMaterials[strName] = pMaterial;
-		return pMaterial;
+		std::map<std::wstring, IMaterial*>::iterator it = _vMaterials.find(strName);
+		if (it == _vMaterials.end())
+		{
+			IMaterial* pMaterial = new CMaterialImpl;
+			_vMaterials[strName] = pMaterial;
+			return pMaterial;
+		}
+		else
+		{
+			return it->second;
+		}
 	}
 	virtual IMaterial* GetMaterial(const wchar_t* strName)
 	{

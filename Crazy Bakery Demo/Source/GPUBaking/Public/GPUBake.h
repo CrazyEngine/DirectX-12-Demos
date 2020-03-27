@@ -185,9 +185,8 @@ private:
 class BASE_API IMaterial
 {
 public:
-	/*static IMaterial* GetMaterial(const wchar_t* strName);
-	static IMaterial* AddMaterial(const wchar_t* strName);
-	static void DestroyAll();*/
+	IMaterial() {};
+	virtual ~IMaterial() {};
 
 	virtual void SetName(const wchar_t* pName) = 0;
 	virtual const wchar_t* GetName() const = 0;
