@@ -120,6 +120,7 @@ private:
     virtual void OnMouseDown(WPARAM btnState, int x, int y)override;
     virtual void OnMouseUp(WPARAM btnState, int x, int y)override;
     virtual void OnMouseMove(WPARAM btnState, int x, int y)override;
+	virtual void OnWheelRoll(short Roll)override;
 
     void OnKeyboardInput(const GameTimer& gt);
 	void AnimateMaterials(const GameTimer& gt);
@@ -537,7 +538,7 @@ void SkinnedMeshApp::OnMouseUp(WPARAM btnState, int x, int y)
 
 void SkinnedMeshApp::OnMouseMove(WPARAM btnState, int x, int y)
 {
-    if((btnState & MK_LBUTTON) != 0)
+    if((btnState & MK_RBUTTON) != 0)
     {
 		// Make each pixel correspond to a quarter of a degree.
 		float dx = XMConvertToRadians(0.25f*static_cast<float>(x - mLastMousePos.x));
@@ -549,6 +550,12 @@ void SkinnedMeshApp::OnMouseMove(WPARAM btnState, int x, int y)
 
     mLastMousePos.x = x;
     mLastMousePos.y = y;
+}
+
+void SkinnedMeshApp::OnWheelRoll(short Roll)
+{
+	float fDelta = static_cast<float>(Roll)/30.0f;
+	mCamera.Walk(fDelta);
 }
  
 void SkinnedMeshApp::OnKeyboardInput(const GameTimer& gt)
@@ -566,6 +573,11 @@ void SkinnedMeshApp::OnKeyboardInput(const GameTimer& gt)
 
 	if(GetAsyncKeyState('D') & 0x8000)
 		mCamera.Strafe(10.0f*dt);
+
+	if (GetAsyncKeyState('Q') & 0x8000)
+		mCamera.Roll(1.0f*dt);
+	if (GetAsyncKeyState('E') & 0x8000)
+		mCamera.Roll(-1.0f*dt);
 
 	mCamera.UpdateViewMatrix();
 }

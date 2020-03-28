@@ -60,14 +60,15 @@ public:
 
 	DirectX::XMFLOAT4X4 GetView4x4f()const;
 	DirectX::XMFLOAT4X4 GetProj4x4f()const;
-
+	
 	// Strafe/Walk the camera a distance d.
-	void Strafe(float d);
-	void Walk(float d);
+	void Strafe(float d);//David：沿着mRight的方向左移或右移
+	void Walk(float d);//David：沿着mLook的方向前进或后退
 
 	// Rotate the camera.
-	void Pitch(float angle);
-	void RotateY(float angle);
+	void Roll(float angle);//David：绕着世界空间下的mLook旋转
+	void Pitch(float angle);//David：绕着世界空间下的mRight旋转
+	void RotateY(float angle);//David：绕着世界空间下的Y轴旋转
 
 	// After modifying camera position/orientation, call to rebuild the view matrix.
 	void UpdateViewMatrix();

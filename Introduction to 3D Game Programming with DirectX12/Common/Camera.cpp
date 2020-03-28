@@ -198,6 +198,18 @@ void Camera::Walk(float d)
 	mViewDirty = true;
 }
 
+void Camera::Roll(float angle)
+{
+	// Rotate up and right vector about the look vector.
+
+	XMMATRIX R = XMMatrixRotationAxis(XMLoadFloat3(&mLook), angle);
+
+	XMStoreFloat3(&mUp, XMVector3TransformNormal(XMLoadFloat3(&mUp), R));
+	XMStoreFloat3(&mRight, XMVector3TransformNormal(XMLoadFloat3(&mRight), R));
+
+	mViewDirty = true;
+}
+
 void Camera::Pitch(float angle)
 {
 	// Rotate up and look vector about the right vector.
