@@ -9,15 +9,15 @@
 //而引擎里的模型格式大都共用同一个索引缓冲区
 //
 
-#ifdef  _MY_EXPORT_
-#define  BASE_API   __declspec(dllexport)
+#ifdef _CRAZY_BAKERY_EXPORT_
+#define CRAZY_BAKERY_API __declspec(dllexport)
 #else
-#define  BASE_API   __declspec(dllimport)
+#define CRAZY_BAKERY_API __declspec(dllimport)
 #endif
 
 namespace CrazyBakery
 {
-struct BASE_API MyFloat2
+struct CRAZY_BAKERY_API MyFloat2
 {
 	float x, y;
 	MyFloat2& operator += (const MyFloat2& v)
@@ -34,7 +34,7 @@ struct BASE_API MyFloat2
 	}
 };
 
-struct BASE_API MyFloat3
+struct CRAZY_BAKERY_API MyFloat3
 {
 	float x, y, z;
 	MyFloat3& operator += (const MyFloat3& v)
@@ -60,7 +60,7 @@ struct BASE_API MyFloat3
 	}
 };
 
-struct BASE_API MyFloat4
+struct CRAZY_BAKERY_API MyFloat4
 {
 	float x, y, z, w;
 	MyFloat4& operator += (const MyFloat4& v)
@@ -89,15 +89,15 @@ struct BASE_API MyFloat4
 	}
 };
 
-struct BASE_API MyInt2
+struct CRAZY_BAKERY_API MyInt2
 {
 	int x, y;
 };
-struct BASE_API MyInt3
+struct CRAZY_BAKERY_API MyInt3
 {
 	int x, y, z;
 };
-struct BASE_API MyMatrix3x3
+struct CRAZY_BAKERY_API MyMatrix3x3
 {
 	float mat[3][3];
 	MyFloat3 operator *(const MyFloat3& v) const
@@ -109,7 +109,7 @@ struct BASE_API MyMatrix3x3
 		return Result;
 	}
 };
-struct BASE_API MyMatrix4x4
+struct CRAZY_BAKERY_API MyMatrix4x4
 {
 	float mat[4][4];
 	MyFloat3 operator *(const MyFloat3& v) const
@@ -126,7 +126,7 @@ struct BASE_API MyMatrix4x4
 /*
 一个IMesh对象对应一个模型
 **/
-class BASE_API IMesh
+class CRAZY_BAKERY_API IMesh
 {
 public:
 	IMesh();
@@ -174,7 +174,7 @@ private:
 };
 
 
-class BASE_API ITexture
+class CRAZY_BAKERY_API ITexture
 {
 private:
 
@@ -182,7 +182,7 @@ private:
 };
 
 //暂时没有用到
-class BASE_API IMaterial
+class CRAZY_BAKERY_API IMaterial
 {
 public:
 	IMaterial() {};
@@ -213,7 +213,7 @@ public:
 	MyFloat2 m_vEmissiveScale = { 1.0f, 1.0f };		//Emissive的缩放系数
 };
 
-class BASE_API IEntity
+class CRAZY_BAKERY_API IEntity
 {
 public:
 	MyFloat3 m_vTranslation = { 0.0f, 0.0f, 0.0f };
@@ -223,7 +223,7 @@ public:
 	MyMatrix3x3 m_matWorld3x3;//逆矩阵的转置矩阵，保证法线在非等比缩放下也能正常
 };
 
-class BASE_API IStaticEntity : public IEntity
+class CRAZY_BAKERY_API IStaticEntity : public IEntity
 {
 public:
 	IStaticEntity();
@@ -254,7 +254,7 @@ private:
 };
 
 
-class BASE_API ILight : public IEntity
+class CRAZY_BAKERY_API ILight : public IEntity
 {
 public:
 	ILight()
@@ -278,7 +278,7 @@ public:
 	ELightStage m_eStage = Stationary;
 	MyFloat3 m_vColor;
 };
-class BASE_API IDirectionalLight : public ILight
+class CRAZY_BAKERY_API IDirectionalLight : public ILight
 {
 public:
 	IDirectionalLight()
@@ -287,7 +287,7 @@ public:
 	}
 	MyFloat3 m_vDirection;
 };
-class BASE_API IPointLight : public ILight
+class CRAZY_BAKERY_API IPointLight : public ILight
 {
 public:
 	IPointLight()
@@ -295,7 +295,7 @@ public:
 		m_eType = Point;
 	}
 };
-class BASE_API ISpotLight : public ILight
+class CRAZY_BAKERY_API ISpotLight : public ILight
 {
 public:
 	ISpotLight()
@@ -306,7 +306,7 @@ public:
 	float m_cosCutoff;
 	MyFloat3 m_direction;
 };
-class BASE_API ILineLight : public ILight//暂不考虑实现
+class CRAZY_BAKERY_API ILineLight : public ILight//暂不考虑实现
 {
 public:
 };
@@ -320,7 +320,7 @@ public:
 ** IScatterer class is used to store baking intermediate in overture and beauty pass.
 ** It is a global buffer which can be reused between different batches.
 */
-class BASE_API IScatterer
+class CRAZY_BAKERY_API IScatterer
 {
 public:
 	IScatterer() { }
@@ -358,7 +358,7 @@ public:
 	bool m_boBlockRay = false;//烘焙时是否遮挡射线
 };
 
-class BASE_API IScene
+class CRAZY_BAKERY_API IScene
 {
 public:
 	IScene() {}
@@ -398,7 +398,7 @@ public:
 /*
 ** This is the option you must provide to baker at the very beginning.
 */
-class BASE_API IBakeOption
+class CRAZY_BAKERY_API IBakeOption
 {
 public:
 	IBakeOption() {};
@@ -447,7 +447,7 @@ public:
 };
 
 //最终烘焙的结果
-class BASE_API ILightmap
+class CRAZY_BAKERY_API ILightmap
 {
 public:
 	ILightmap() {};
@@ -463,7 +463,7 @@ public:
 	int m_texHeight;
 };
 
-class BASE_API ITimer
+class CRAZY_BAKERY_API ITimer
 {
 public:
 	virtual void Reset() = 0;//重置计时器（总时间会清空）
@@ -472,7 +472,7 @@ public:
 	virtual double GetElapsedTime() = 0;//总共计时时间（不含暂停期间的时间）
 };
 
-class BASE_API ICrazyBakery
+class CRAZY_BAKERY_API ICrazyBakery
 {
 public:
 	ICrazyBakery() {}
@@ -502,30 +502,30 @@ public:
 	virtual bool Close() = 0;
 };
 
-BASE_API ICrazyBakery* CreateCrazyBakery();
+CRAZY_BAKERY_API ICrazyBakery* CreateCrazyBakery();
 
 }
 
 //Dump函数，所有的实现都不在当前模块里，由外部模块实现，因为希望这个模块尽量精简，不希望搞成大杂脍
 namespace CrazyBakery
 {
-//	void BASE_API DumpTriangle(const std::vector<float3>& p, const wchar_t* strPath);
-//	void BASE_API DumpScatterer(const Scatterer * scatterer, const wchar_t* strPath, const wchar_t* texture = L"");
-//	void BASE_API DumpScatterer(const std::vector<const Scatterer*>& scatterer, const wchar_t* strPath);
+//	void CRAZY_BAKERY_API DumpTriangle(const std::vector<float3>& p, const wchar_t* strPath);
+//	void CRAZY_BAKERY_API DumpScatterer(const Scatterer * scatterer, const wchar_t* strPath, const wchar_t* texture = L"");
+//	void CRAZY_BAKERY_API DumpScatterer(const std::vector<const Scatterer*>& scatterer, const wchar_t* strPath);
 	//用于将整个场景输出成一个通用的模型文件
-	typedef void BASE_API (*pDumpMergedScatterer)(const IScene* pScene, const wchar_t* strPath, const wchar_t* strTextureType);
-	extern BASE_API pDumpMergedScatterer g_pDumpMergedScatterer;
-	//void BASE_API DumpMergedScatterer(const CScene* pScene, const wchar_t* strPath, const wchar_t* strTextureType);
-//	void BASE_API DumpRay(const Ray *ray, const Hit *hit, const int n, const wchar_t* strPath);
-//	void BASE_API DumpOptixRay(const Ray *devRay, const Hit *devHit, const int n, const wchar_t* strPath);
+	typedef void CRAZY_BAKERY_API (*pDumpMergedScatterer)(const IScene* pScene, const wchar_t* strPath, const wchar_t* strTextureType);
+	extern CRAZY_BAKERY_API pDumpMergedScatterer g_pDumpMergedScatterer;
+	//void CRAZY_BAKERY_API DumpMergedScatterer(const CScene* pScene, const wchar_t* strPath, const wchar_t* strTextureType);
+//	void CRAZY_BAKERY_API DumpRay(const Ray *ray, const Hit *hit, const int n, const wchar_t* strPath);
+//	void CRAZY_BAKERY_API DumpOptixRay(const Ray *devRay, const Hit *devHit, const int n, const wchar_t* strPath);
 //	void DumpGrid(const Grid<CellInt>& grid, const std::wstring & path);
 	//用于将纹理输出成文件
-	typedef void BASE_API (*pDumpBuffer)(size_t numWidth, size_t numHeight, MyFloat3* pData, const wchar_t* strPath, const wchar_t* StageName, int iLightmap, const wchar_t* strName, bool boFloat);
-	extern BASE_API pDumpBuffer g_pDumpBuffer;
-//	void BASE_API DumpBuffer(size_t numWidth, size_t numHeight, MyFloat3* pData, const wchar_t* strPath, const wchar_t* StageName, int iLightmap, const wchar_t* strName, bool boFloat = false);
-//	void BASE_API DumpBuffer(const std::vector<Batch::Output>& devBuffer, const wchar_t* strPath, const wchar_t* StageName, bool boFloat = false);
-//	void BASE_API DumpOptixImage(const Buffer<float3> &devImage, const int w, const int h, const wchar_t* strPath);
-//	void BASE_API DumpOptixImage(const Buffer<float4> &devImage, const int w, const int h, const wchar_t* strPath);
+	typedef void CRAZY_BAKERY_API (*pDumpBuffer)(size_t numWidth, size_t numHeight, MyFloat3* pData, const wchar_t* strPath, const wchar_t* StageName, int iLightmap, const wchar_t* strName, bool boFloat);
+	extern CRAZY_BAKERY_API pDumpBuffer g_pDumpBuffer;
+//	void CRAZY_BAKERY_API DumpBuffer(size_t numWidth, size_t numHeight, MyFloat3* pData, const wchar_t* strPath, const wchar_t* StageName, int iLightmap, const wchar_t* strName, bool boFloat = false);
+//	void CRAZY_BAKERY_API DumpBuffer(const std::vector<Batch::Output>& devBuffer, const wchar_t* strPath, const wchar_t* StageName, bool boFloat = false);
+//	void CRAZY_BAKERY_API DumpOptixImage(const Buffer<float3> &devImage, const int w, const int h, const wchar_t* strPath);
+//	void CRAZY_BAKERY_API DumpOptixImage(const Buffer<float4> &devImage, const int w, const int h, const wchar_t* strPath);
 
 	//用于输出信息
 	enum EMessageType
@@ -536,14 +536,14 @@ namespace CrazyBakery
 		MT_Error,
 		MT_Fatal
 	};
-	typedef void BASE_API(*pProcessMessage)(EMessageType eType, const wchar_t* strMessage);
-	extern BASE_API pProcessMessage g_pProcessMessage;
+	typedef void CRAZY_BAKERY_API(*pProcessMessage)(EMessageType eType, const wchar_t* strMessage);
+	extern CRAZY_BAKERY_API pProcessMessage g_pProcessMessage;
 }
 
 
 //全局函数
 namespace CrazyBakery
 {
-	void BASE_API MakeMatrix(MyMatrix3x3* pMat, const MyFloat3* pScale, const MyFloat3* pRot);
-	void BASE_API MakeMatrix(MyMatrix4x4* pMat, const MyFloat3* pScale, const MyFloat3* pRot, const MyFloat3* pTrans);
+	void CRAZY_BAKERY_API MakeMatrix(MyMatrix3x3* pMat, const MyFloat3* pScale, const MyFloat3* pRot);
+	void CRAZY_BAKERY_API MakeMatrix(MyMatrix4x4* pMat, const MyFloat3* pScale, const MyFloat3* pRot, const MyFloat3* pTrans);
 }
