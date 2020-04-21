@@ -206,15 +206,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				//加载场景
 				if (g_pScene)
 				{
-					g_pCrazyBakery->ReleaseScene(g_pScene->GetFileName());//手动释放场景，避免重复使用导致问题
+					g_pCrazyBakery->ReleaseScene(g_pScene->GetPath());//手动释放场景，避免重复使用导致问题
 				}
-				g_pScene = g_pCrazyBakery->GetScene(szFilePath);
+				g_pScene = g_pCrazyBakery->GetOrCreateScene(szFilePath);
 				CSceneLoader cLoader;
 				cLoader.Load(szFilePath, g_pScene);
 				cLoader.PrepareData(g_pScene);
 
 				std::wstring strText(L"Crazy Bakery Demo. Openned scene is ");
-				strText += g_pScene->GetFileName();
+				strText += g_pScene->GetPath();
 				SetWindowText(hWnd, strText.c_str());
 			}
 				break;
@@ -231,7 +231,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					wchar_t strWindowText[256];
 					GetWindowText(hWnd, strWindowText, 256);
 					std::wstring strText(L"Crazy Bakery Demo. Openned scene is ");
-					strText += g_pScene->GetFileName();
+					strText += g_pScene->GetPath();
 					strText += L"   ";
 					strText += L"Begin to bake......";
 					SetWindowText(hWnd, strText.c_str());
@@ -284,7 +284,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 				{
 					std::wstring strText(L"Crazy Bakery Demo. Openned scene is ");
-					strText += g_pScene->GetFileName();
+					strText += g_pScene->GetPath();
 					strText += L"   ";
 					strText += L"Baking is finished, ";
 					strText += L"time used: ";
@@ -329,7 +329,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				//输出obj
 				bool boDumpObj = true;
 				if (boBaked && boDumpObj && g_pScene->GetScattererNumber())
-					g_pDumpMergedScatterer(g_pScene, GetParent(g_pScene->GetScatterer(0)->GetOutputPath()).c_str(), L".png");
+					g_pDumpMergedScatterer(g_pScene, L".png");
 				
 				for (size_t i = 0; i < vLightmaps.size(); ++i)
 				{

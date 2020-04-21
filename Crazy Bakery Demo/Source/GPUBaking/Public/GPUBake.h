@@ -216,6 +216,9 @@ public:
 class CRAZY_BAKERY_API IEntity
 {
 public:
+	IEntity() {}
+	virtual ~IEntity() {}
+
 	MyFloat3 m_vTranslation = { 0.0f, 0.0f, 0.0f };
 	MyFloat3 m_vRotation = { 0.0f, 0.0f, 0.0f };
 	MyFloat3 m_vScale = { 1.0f, 1.0f, 1.0f };
@@ -257,8 +260,8 @@ private:
 class CRAZY_BAKERY_API ILight : public IEntity
 {
 public:
-	ILight()
-	{}
+	ILight() {}
+	virtual ~ILight() {}
 
 	enum ELightType
 	{
@@ -285,6 +288,8 @@ public:
 	{
 		m_eType = Directional;
 	}
+	virtual ~IDirectionalLight() {}
+
 	MyFloat3 m_vDirection;
 };
 class CRAZY_BAKERY_API IPointLight : public ILight
@@ -294,6 +299,7 @@ public:
 	{
 		m_eType = Point;
 	}
+	virtual ~IPointLight() {}
 };
 class CRAZY_BAKERY_API ISpotLight : public ILight
 {
@@ -302,6 +308,8 @@ public:
 	{
 		m_eType = Spot;
 	}
+	virtual ~ISpotLight() {}
+
 	float m_cosFalloff;
 	float m_cosCutoff;
 	MyFloat3 m_direction;
@@ -364,10 +372,11 @@ public:
 	IScene() {}
 	virtual ~IScene() {}
 
-	//File name是场景文件的名字，用于ICrazyBakery里管理场景
-	virtual void SetFileName(const wchar_t* strName) = 0;
-	virtual const wchar_t* GetFileName() const = 0;
+	//Scene path是场景文件的绝对路径，用于在ICrazyBakery里管理场景，
+	//注意：没有留出外部设置的接口（只允许在CCrazyBakeryImpl::GetOrCreateScene()里设置），因为那样会导致场景管理出错
+	virtual const wchar_t* GetPath() const = 0;
 
+	//Scene name暂时没有用到
 	virtual void SetName(const wchar_t* strName) = 0;
 	virtual const wchar_t* GetName() const = 0;
 
@@ -388,11 +397,11 @@ public:
 	virtual IStaticEntity* GetEntity(size_t iLightmap, size_t idEntity) const  = 0;//idEntity是Entity在Lightmap内部的索引
 	virtual IStaticEntity* GetEntityByGlobalID(size_t idGlobal) const = 0;
 	
-	virtual void Pushback(ILight* pLight) = 0;
+	virtual ILight* CreateLight(ILight::ELightType eType) = 0;
 	virtual size_t GetLightNum() const = 0;
 	virtual ILight* GetLight(size_t iIndex) const = 0;
 
-	wchar_t m_strOutputPath[256] = { 0 };
+//	wchar_t m_strOutputPath[256] = { 0 };
 };
 
 /*
@@ -483,8 +492,9 @@ public:
 
 	//下面几个创建函数首先查找有没有指定名字的对象，没有就新创建一个
 	//下面几个释放函数用于手动释放，也可以不释放，随着ICrazyBakery自动释放
-	virtual IScene* GetScene(const wchar_t* strName = L"") = 0;
-	virtual void ReleaseScene(const wchar_t* strName = L"") = 0;
+	virtual bool SceneExist(const wchar_t* strPath = L"") = 0;
+	virtual IScene* GetOrCreateScene(const wchar_t* strPath = L"") = 0;
+	virtual void ReleaseScene(const wchar_t* strPath = L"") = 0;
 
 	virtual IBakeOption* GetBakeOption(const wchar_t* strName = L"") = 0;
 	virtual void ReleaseBakeOption(const wchar_t* strName = L"") = 0;
@@ -513,14 +523,14 @@ namespace CrazyBakery
 //	void CRAZY_BAKERY_API DumpScatterer(const Scatterer * scatterer, const wchar_t* strPath, const wchar_t* texture = L"");
 //	void CRAZY_BAKERY_API DumpScatterer(const std::vector<const Scatterer*>& scatterer, const wchar_t* strPath);
 	//用于将整个场景输出成一个通用的模型文件
-	typedef void CRAZY_BAKERY_API (*pDumpMergedScatterer)(const IScene* pScene, const wchar_t* strPath, const wchar_t* strTextureType);
+	typedef void CRAZY_BAKERY_API (*pDumpMergedScatterer)(const IScene* pScene, const wchar_t* strTextureType);
 	extern CRAZY_BAKERY_API pDumpMergedScatterer g_pDumpMergedScatterer;
 	//void CRAZY_BAKERY_API DumpMergedScatterer(const CScene* pScene, const wchar_t* strPath, const wchar_t* strTextureType);
 //	void CRAZY_BAKERY_API DumpRay(const Ray *ray, const Hit *hit, const int n, const wchar_t* strPath);
 //	void CRAZY_BAKERY_API DumpOptixRay(const Ray *devRay, const Hit *devHit, const int n, const wchar_t* strPath);
 //	void DumpGrid(const Grid<CellInt>& grid, const std::wstring & path);
 	//用于将纹理输出成文件
-	typedef void CRAZY_BAKERY_API (*pDumpBuffer)(size_t numWidth, size_t numHeight, MyFloat3* pData, const wchar_t* strPath, const wchar_t* StageName, int iLightmap, const wchar_t* strName, bool boFloat);
+	typedef void CRAZY_BAKERY_API (*pDumpBuffer)(size_t numWidth, size_t numHeight, MyFloat3* pData, const wchar_t* StageName, int iLightmap, const wchar_t* strName, bool boFloat);
 	extern CRAZY_BAKERY_API pDumpBuffer g_pDumpBuffer;
 //	void CRAZY_BAKERY_API DumpBuffer(size_t numWidth, size_t numHeight, MyFloat3* pData, const wchar_t* strPath, const wchar_t* StageName, int iLightmap, const wchar_t* strName, bool boFloat = false);
 //	void CRAZY_BAKERY_API DumpBuffer(const std::vector<Batch::Output>& devBuffer, const wchar_t* strPath, const wchar_t* StageName, bool boFloat = false);

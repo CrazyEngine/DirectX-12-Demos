@@ -10,6 +10,8 @@
 #include "String.h"
 using namespace CrazyBakery;
 
+wchar_t m_strOutputPath[256] = { 0 };
+
 inline void ProcessScatterer(const Json::Value &jsonVal, IScene* pScene)
 {
 	int idEntity = 0;
@@ -23,7 +25,7 @@ inline void ProcessScatterer(const Json::Value &jsonVal, IScene* pScene)
 		const Json::Value jsonScattererName = jsonScatterer["ScattererName"];
 		pScatterer->SetName(StringToWString(jsonScattererName.asString()).c_str());
 
-		std::wstring parent = pScene->m_strOutputPath; // GetParent(path);
+		std::wstring parent = m_strOutputPath; // GetParent(path);
 		std::wstring path = parent + pScatterer->GetName() + L".png";
 		pScatterer->SetOutputPath(path.c_str());
 
@@ -226,7 +228,7 @@ inline void ProcessEmitter(const Json::Value &jsonVal, IScene* pScene)
 			if (jsonColor == Json::Value::nullSingleton())
 				continue;
 
-			IDirectionalLight* pLight = new IDirectionalLight;
+			IDirectionalLight* pLight = (IDirectionalLight*)pScene->CreateLight(ILight::Directional);
 			pLight->m_eStage = eLightStage;
 			pLight->m_vDirection = MyFloat3
 			{
@@ -241,8 +243,6 @@ inline void ProcessEmitter(const Json::Value &jsonVal, IScene* pScene)
 				jsonColor[1].asFloat(),
 				jsonColor[2].asFloat()
 			};
-
-			pScene->Pushback(pLight);
 		}
 		else if (type.asString() == "Point")
 		{
@@ -254,7 +254,7 @@ inline void ProcessEmitter(const Json::Value &jsonVal, IScene* pScene)
 			if (jsonColor == Json::Value::nullSingleton())
 				continue;
 
-			IPointLight* pLight = new IPointLight;
+			IPointLight* pLight = (IPointLight*)pScene->CreateLight(ILight::Point);
 			pLight->m_eStage = eLightStage;
 			pLight->m_vTranslation = MyFloat3
 			{
@@ -268,8 +268,6 @@ inline void ProcessEmitter(const Json::Value &jsonVal, IScene* pScene)
 				jsonColor[1].asFloat(),
 				jsonColor[2].asFloat()
 			};
-
-			pScene->Pushback(pLight);
 		}
 		else if (type.asString() == "Spot")
 		{
@@ -290,7 +288,7 @@ inline void ProcessEmitter(const Json::Value &jsonVal, IScene* pScene)
 			if (jsonDirection == Json::Value::nullSingleton())
 				continue;
 
-			ISpotLight* pLight = new ISpotLight;
+			ISpotLight* pLight = (ISpotLight*)pScene->CreateLight(ILight::Spot);
 			pLight->m_eStage = eLightStage;
 			pLight->m_vTranslation = MyFloat3
 			{
@@ -313,8 +311,6 @@ inline void ProcessEmitter(const Json::Value &jsonVal, IScene* pScene)
 				jsonDirection[2].asFloat()
 			};
 			pLight->m_direction = normalize(pLight->m_direction);
-
-			pScene->Pushback(pLight);
 		}
 	}
 }
@@ -578,9 +574,10 @@ bool CheckFolderExist(const std::wstring &strPath)
 	::FindClose(hFind);
 	return rValue;
 }
+
 bool CSceneLoader::_LoadSceneFile(const std::wstring& strPath, IScene* pScene)
 {
-	pScene->SetName(strPath.c_str());//场景文件的绝对路径
+//	pScene->SetName(strPath.c_str());//场景名字
 
 	//设置输出路径，并保证文件夹确实创建了
 	std::wstring strOutputPath = strPath;
@@ -594,7 +591,7 @@ bool CSceneLoader::_LoadSceneFile(const std::wstring& strPath, IScene* pScene)
 		::CreateDirectory(strOutputPath.c_str(), NULL);
 	}
 	strOutputPath += L"\\";
-	wcscpy_s(pScene->m_strOutputPath, strOutputPath.c_str());//为m_strOutputPath赋值必须在ProcessScatterer()之前执行
+	wcscpy_s(m_strOutputPath, strOutputPath.c_str());//为m_strOutputPath赋值必须在ProcessScatterer()之前执行
 
 	std::ifstream sceneFile;
 	sceneFile.open(strPath.c_str(), std::ios_base::in);
@@ -608,6 +605,13 @@ bool CSceneLoader::_LoadSceneFile(const std::wstring& strPath, IScene* pScene)
 		return false;
 	}
 
+	const Json::Value jSceneName = jsonRoot["SceneName"];
+	if (jSceneName != Json::Value::nullSingleton())
+	{
+		const std::string strSceneName = jsonRoot["SceneName"].asCString();
+		pScene->SetName(StringToWString(strSceneName).c_str());//场景名字
+	}
+	
 	const Json::Value jsonScatterer = jsonRoot["Scatterers"];
 	const Json::Value jsonLightSource = jsonRoot["LightSources"];
 

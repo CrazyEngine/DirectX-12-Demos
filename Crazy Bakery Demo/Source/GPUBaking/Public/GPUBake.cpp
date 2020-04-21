@@ -522,6 +522,14 @@ public:
 	}
 	virtual ~CSceneImpl()
 	{
+		for (size_t i = 0; i < m_vLights.size(); ++i)
+		{
+			ILight* pLight = m_vLights[i];
+			if (pLight)
+				delete pLight;
+		}
+		m_vLights.clear();
+
 		for (size_t i=0;i< m_vLightmaps.size();++i)
 		{
 			IScatterer* pLightmap = m_vLightmaps[i];
@@ -557,13 +565,13 @@ public:
 		//IMaterial::DestroyAll();
 	}
 
-	virtual void SetFileName(const wchar_t* strName)
+	virtual void SetPath(const wchar_t* strPath)
 	{
-		_strFileName = strName;
+		_strPath = strPath;
 	}
-	virtual const wchar_t* GetFileName() const
+	virtual const wchar_t* GetPath() const
 	{
-		return _strFileName.c_str();
+		return _strPath.c_str();
 	}
 
 	virtual void SetName(const wchar_t* strName)
@@ -694,9 +702,24 @@ public:
 		return m_vAllStaticEntities[idGlobal];
 	}
 
-	virtual void Pushback(ILight* pLight)
+	virtual ILight* CreateLight(ILight::ELightType eType)
 	{
-		m_vLights.push_back(pLight);
+		ILight* pLight = NULL;
+		switch (eType)
+		{
+		case CrazyBakery::ILight::Point:
+			pLight = new IPointLight;
+			break;
+		case CrazyBakery::ILight::Spot:
+			pLight = new ISpotLight;
+			break;
+		case CrazyBakery::ILight::Directional:
+			pLight = new IDirectionalLight;
+			break;
+		default:
+			break;
+		}
+		return pLight;
 	}
 	virtual size_t GetLightNum() const
 	{
@@ -709,12 +732,12 @@ public:
 	}
 
 private:
-	std::wstring _strFileName;
+	std::wstring _strPath;
 	std::wstring _strName;
 	std::map<std::wstring, IMesh*> _vMeshes;
 	std::map<std::wstring, IMaterial*> _vMaterials;//TODO 加载完毕场景应该清除
 	std::vector<IScatterer*> m_vLightmaps;
-	std::vector<IStaticEntity*> m_vAllStaticEntities;	//场景里所有的静态实体，用于运行时根据ID快速索引
+	std::vector<IStaticEntity*> m_vAllStaticEntities;	//场景里所有的静态实体，用于运行时根据ID快速索引。不用在这个类里析构，在Lightmap类里释放的。
 //	typedef std::vector<CStaticEntity*> CEntityGroup;
 //	std::vector<CEntityGroup*> m_vAllStaticEntities;	//场景里所有的静态实体，每一个元素都和m_vClassScatterers里的相对应
 	std::vector<ILight*> m_vLights;			//场景里所有的光源
@@ -773,14 +796,23 @@ public:
 		return _cBaker.Init();
 	}
 
-	virtual IScene* GetScene(const wchar_t* strName)
+	virtual bool SceneExist(const wchar_t* strPath = L"")
 	{
-		std::map<std::wstring, IScene*>::iterator it = _vScenes.find(strName);
+		if (_vScenes.find(strPath) != _vScenes.end())
+		{
+			return true;
+		} 
+
+		return false;
+	}
+	virtual IScene* GetOrCreateScene(const wchar_t* strPath)
+	{
+		std::map<std::wstring, IScene*>::iterator it = _vScenes.find(strPath);
 		if (it == _vScenes.end())
 		{
-			IScene* pScene = new CSceneImpl;
-			pScene->SetFileName(strName);
-			_vScenes[strName] = pScene;
+			CSceneImpl* pScene = new CSceneImpl;
+			pScene->SetPath(strPath);
+			_vScenes[strPath] = pScene;
 			return pScene;
 		}
 		else
@@ -788,9 +820,9 @@ public:
 			return it->second;
 		}
 	}
-	virtual void ReleaseScene(const wchar_t* strName)
+	virtual void ReleaseScene(const wchar_t* strPath)
 	{
-		std::map<std::wstring, IScene*>::iterator it = _vScenes.find(strName);
+		std::map<std::wstring, IScene*>::iterator it = _vScenes.find(strPath);
 		if (it != _vScenes.end())
 		{
 			IScene* pScene = it->second;
@@ -955,10 +987,10 @@ ICrazyBakery* CreateCrazyBakery()
 }
 
 
-void DumpMergedScatterer(const IScene* pScene, const wchar_t* strPath, const wchar_t* strTextureType)
+void DumpMergedScatterer(const IScene* pScene, const wchar_t* strTextureType)
 {
 }
-void DumpBuffer(size_t numWidth, size_t numHeight, MyFloat3* pData, const wchar_t* strPath, const wchar_t* StageName, int iLightmap, const wchar_t* strName, bool boFloat)
+void DumpBuffer(size_t numWidth, size_t numHeight, MyFloat3* pData, const wchar_t* StageName, int iLightmap, const wchar_t* strName, bool boFloat)
 {
 }
 pDumpMergedScatterer g_pDumpMergedScatterer = DumpMergedScatterer;
